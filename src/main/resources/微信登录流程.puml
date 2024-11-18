@@ -1,0 +1,31 @@
+@startuml
+actor User
+participant "小程序" as MiniApp
+participant "微信服务器" as WxServer
+participant "后端服务器" as Backend
+
+User -> MiniApp: 点击登录
+activate MiniApp
+
+MiniApp -> WxServer: wx.login()
+activate WxServer
+note right: 调用微信登录接口
+WxServer --> MiniApp: 返回临时登录凭证code
+deactivate WxServer
+
+MiniApp -> Backend: 发送code
+activate Backend
+
+Backend -> WxServer: code + appid + secret
+activate WxServer
+note right: 请求session信息
+WxServer --> Backend: session_key + openid
+deactivate WxServer
+
+Backend --> MiniApp: 返回登录结果
+deactivate Backend
+
+MiniApp --> User: 登录完成
+deactivate MiniApp
+
+@enduml
