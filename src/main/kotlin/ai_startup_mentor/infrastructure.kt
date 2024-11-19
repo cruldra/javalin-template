@@ -36,16 +36,3 @@ fun configDatabase(): Database {
     config.setDataSourceConfig(properties.db)
     return DatabaseFactory.create(config)
 }
-
-
-fun main() {
-    val dataSourceConfig = DataSourceConfig()
-    dataSourceConfig.setUrl("jdbc:postgresql://192.168.1.3:5432/ai_startup_mentor")
-    dataSourceConfig.setUsername("DATABASE_USERNAME")
-    dataSourceConfig.setPassword("DATABASE_PASSWORD")
-    dataSourceConfig.setDriver("org.mariadb.jdbc.Driver")
-    val config = DatabaseConfig()
-    config.objectMapper = objectMapper
-    config.setDataSourceConfig(dataSourceConfig)
-      DatabaseFactory.create(config)
-}

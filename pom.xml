@@ -32,14 +32,13 @@
         </dependency>
         <dependency>
             <groupId>io.ebean</groupId>
-            <artifactId>ebean-platform-postgres</artifactId>
+            <artifactId>ebean</artifactId>
             <version>15.6.0</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.ebean</groupId>
+            <artifactId>ebean-querybean</artifactId>
+            <version>15.6.0</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
