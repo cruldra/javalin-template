@@ -95,9 +95,22 @@ class AuthorizationRoutes : JavalinRouterDefinitions {
 }
 
 fun createHttpServer(port: Int = 8192) {
+    SaTokenConfigManager.init()
     val app = Javalin.create { config ->
         config.jsonMapper(JavalinJackson(objectMapper))
-    }.registerRouters("ai_startup_mentor").start(port)
+    }
+        .registerRouters("ai_startup_mentor")
+        //.before(SaTokenAuthHandler())
+        .start(port)
+    // 在每个请求开始时保存 Context
+    app.before { ctx ->
+        JavalinRequestHolder.setContext(ctx)
+    }
+
+    // 在每个请求结束后清理 Context
+    app.after { ctx ->
+        JavalinRequestHolder.clear()
+    }
     app.exception(
         InvocationTargetException::class.java
     ) { e, ctx ->

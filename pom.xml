@@ -224,7 +224,7 @@
         </dependency>
         <dependency>
             <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-core</artifactId>
+            <artifactId>sa-token-jakarta-servlet</artifactId>
             <version>1.39.0</version>
         </dependency>
         <dependency>
