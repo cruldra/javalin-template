@@ -11,6 +11,10 @@ data class Properties(
         val appSecret: String,
     )
 }
+data class AccountLoginData(
+    val username: String,
+    val password: String
+)
 
 data class WechatLoginData(
     val code: String,
@@ -18,13 +22,13 @@ data class WechatLoginData(
     val iv: String
 )
 
-data class WechatLoginResult(
+data class  LoginResult(
     val token: String,
     val userInfo: UserInfo
 )
 
 data class UserInfo(
+    val id: Long,
     val avatar: String,
-    val nickname: String,
     val phoneNumber: String? = null
 )
