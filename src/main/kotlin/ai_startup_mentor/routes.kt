@@ -1,5 +1,6 @@
 package ai_startup_mentor
 
+import io.javalin.http.staticfiles.Location
 import ai_startup_mentor.query.QAsmUser
 import cn.binarywang.wx.miniapp.api.WxMaService
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult
@@ -15,6 +16,7 @@ import jzeus.log.LoggerDelegate
 import jzeus.log.log
 import jzeus.net.http.server.*
 import jzeus.str.bcryptHash
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.lang.reflect.InvocationTargetException
 
 /**
@@ -29,6 +31,7 @@ class AuthorizationRoutes : JavalinRouterDefinitions {
 
     @PostMapping("/auth/wxLogin")
     fun wxLogin(ctx: Context) {
+        val properties = IOC.getComponent(Properties::class.java)
         val request = ctx.bodyAsClass<WechatLoginData>().log(log) {
             "微信登录:${this.toJsonString()}"
         }
@@ -47,6 +50,7 @@ class AuthorizationRoutes : JavalinRouterDefinitions {
         val user = QAsmUser().phone.eq(wxPhoneInfo.phoneNumber).findOne() ?: AsmUser().apply {
             phone = wxPhoneInfo.phoneNumber
             openid = sessionInfo.openid
+            avatarUrl = properties.defaultAvatarUrl
             username = wxPhoneInfo.phoneNumber // 使用手机号作为用户名
             password = "123456".bcryptHash() // 使用openid的hash作为初始密码
             userType = AsmUser.Type.WECHAT
@@ -68,13 +72,15 @@ class AuthorizationRoutes : JavalinRouterDefinitions {
 
     @PostMapping("/auth/login")
     fun login(ctx: Context) {
+        val passwordEncoder = IOC.getComponent(PasswordEncoder::class.java)
         val request = ctx.bodyAsClass<AccountLoginData>().log(log) {
             "通过账号登录:${this.toJsonString()}"
         }
 
         val user = QAsmUser().username.eq(request.username).findOne()
             ?: throw UserNotFoundException("找不到用户 ${request.username}")
-        if (user.password != request.password.bcryptHash())
+
+        if (!passwordEncoder.matches(request.password, user.password))
             throw InvalidCredentialsException("密码错误")
 
         // 登录并获取token
@@ -97,6 +103,11 @@ class AuthorizationRoutes : JavalinRouterDefinitions {
 fun createHttpServer(port: Int = 8192) {
     SaTokenConfigManager.init()
     val app = Javalin.create { config ->
+        config.staticFiles.add { staticFiles ->
+            staticFiles.hostedPath = "/static"
+            staticFiles.directory = ".data"
+            staticFiles.location = Location.EXTERNAL
+        }
         config.jsonMapper(JavalinJackson(objectMapper))
     }
         .registerRouters("ai_startup_mentor")

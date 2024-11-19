@@ -11,6 +11,7 @@ import jzeus.ini.toJavaObject
 import jzeus.ioc.adapter
 import jzeus.json.objectMapper
 import org.picocontainer.DefaultPicoContainer
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 val IOC = DefaultPicoContainer()
 fun configIOC() {
@@ -27,6 +28,7 @@ fun configIOC() {
         }
     }
     IOC.addComponent(configDatabase())
+    IOC.addComponent(BCryptPasswordEncoder())
 }
 
 fun configDatabase(): Database {

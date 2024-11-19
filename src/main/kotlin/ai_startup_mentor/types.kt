@@ -4,13 +4,17 @@ import io.ebean.datasource.DataSourceConfig
 
 data class Properties(
     val weiChat: WeiChat,
-    val db: DataSourceConfig
+    val db: DataSourceConfig,
+    val server: Server,
 ) {
     data class WeiChat(
         val appId: String,
         val appSecret: String,
     )
+
+    data class Server(val host: String)
 }
+
 data class AccountLoginData(
     val username: String,
     val password: String
@@ -22,7 +26,7 @@ data class WechatLoginData(
     val iv: String
 )
 
-data class  LoginResult(
+data class LoginResult(
     val token: String,
     val userInfo: UserInfo
 )

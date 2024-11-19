@@ -7,6 +7,7 @@ import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import jzeus.db.BaseModel
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @MappedSuperclass
@@ -41,6 +42,32 @@ open class AsmUser : AsmBaseModel() {
     @NotNull
     @Column(name = "username", nullable = false, length = 50)
     open var username: String? = null
+
+    /**
+     * 地址
+     */
+    @Column(name = "address")
+    open var address: String? = null
+
+    /**
+     * 昵称
+     */
+    @Column(name = "nickname")
+    open var nickname: String? = null
+
+    /**
+     * 生日
+     */
+    @Column(name = "birthday")
+    open var birthday: LocalDate? = null
+
+    /**
+     * 性别
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    @DbDefault("'UNKNOWN'")
+    open var gender: Gender = Gender.UNKNOWN
 
     /**
      * 密码（加密存储）
@@ -81,6 +108,12 @@ open class AsmUser : AsmBaseModel() {
     enum class Type {
         WECHAT,
         LOCAL
+    }
+
+    enum class Gender {
+        MALE,
+        FEMALE,
+        UNKNOWN
     }
 
     class Builder {
