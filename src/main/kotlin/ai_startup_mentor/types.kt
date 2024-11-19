@@ -1,7 +1,10 @@
 package ai_startup_mentor
 
+import io.ebean.datasource.DataSourceConfig
+
 data class Properties(
-    val weiChat: WeiChat
+    val weiChat: WeiChat,
+    val db: DataSourceConfig
 ) {
     data class WeiChat(
         val appId: String,

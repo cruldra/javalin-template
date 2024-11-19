@@ -15,6 +15,7 @@ class Cli {
     @CommandLine.Command(name = "serve", description = ["作为远程服务运行"])
     class Serve : Runnable {
         override fun run() {
+            configIOC()
             createHttpServer()
         }
     }

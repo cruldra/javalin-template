@@ -34,15 +34,16 @@ class AuthorizationRoutes : JavalinRouterDefinitions {
         val sessionInfo: WxMaJscode2SessionResult = wxService.jsCode2SessionInfo(request.code)
 
         // Decrypt user info using sessionKey if needed
-        val userInfo = wxService.userService.getUserInfo(sessionInfo.sessionKey, request.encryptedData, request.iv)
-        val wxPhoneInfo = wxService.userService.getPhoneNoInfo(request.code)
+        //val userInfo = wxService.userService.getUserInfo(sessionInfo.sessionKey, request.encryptedData, request.iv)
+        val wxPhoneInfo = wxService.userService.getPhoneNoInfo(sessionInfo.sessionKey, request.encryptedData, request.iv)
+        log.info("openid: ${sessionInfo.openid}")
         ctx.json(
             ResponsePayloads(
                 data = WechatLoginResult(
                     token = "TODO",
                     userInfo = UserInfo(
-                        avatar = userInfo.avatarUrl,
-                        nickname = userInfo.nickName,
+                        avatar = "userInfo.avatarUrl",
+                        nickname = "userInfo.nickName",
                         phoneNumber = wxPhoneInfo.phoneNumber
                     )
                 )
@@ -53,7 +54,6 @@ class AuthorizationRoutes : JavalinRouterDefinitions {
 }
 
 fun createHttpServer(port: Int = 8192) {
-    configIOC()
     val app = Javalin.create { config ->
         config.jsonMapper(JavalinJackson(objectMapper))
     }.registerRouters("ai_startup_mentor").start(port)
